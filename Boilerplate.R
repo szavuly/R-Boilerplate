@@ -225,7 +225,13 @@ finaldataset <- cbind(finaldataset, res)
 finaldataset$education <- NULL
 
 # MACHINE LEARNING PACKAGES
-library(rpart)
+library(rpart) # Decision tree
+library(randomForest) # Random forest
+library(gbm) # Gradient boosting machine
+library(nnet) # Old neural network package
+library(caret) # Hundred models
+library(rocr) # Receiver operating characteristic curve
+library(glmnet) # Lasso
 
 # DECISION TREE
 library(rpart)
