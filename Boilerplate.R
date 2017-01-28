@@ -288,4 +288,11 @@ res <- data.frame(do.call(rbind,lapply(lst, function(x) table(factor(x, levels=l
 finaldataset <- cbind(finaldataset, res)
 finaldataset$education <- NULL
 
+# GIT PUSH
+
+git remote add origin https://github.com/ewenharrison/test.git
+git config remote.origin.url git@github.com:ewenharrison/test.git
+git pull -u origin master
+git push -u origin master
+
 # HALT AND CATCH FIRE
