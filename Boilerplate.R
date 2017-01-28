@@ -67,15 +67,14 @@ newdata <- subset(mydata, sex == "m" & age > 25,
                   select = weight:income)
 
 # PLOT COLORS
+
 # deepskyblue3
-# firebrick3
-# darkseagreen4
-# goldenrod3
-# lightcoral
-# tomato2
-# plum3
 # seagreen3
+# darkorange1
+# orangered1
+
 # lightblue4
+# aquamarine4
 # lightsalmon3
 # indianred3
 
