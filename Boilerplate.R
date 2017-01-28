@@ -23,11 +23,11 @@ library(rstan)
 rm(list = ls())
 
 # SET WORKING DIRECTORY
-setwd("C:\\Users\\kszavuly\\OneDrive\\CEU\\Introduction to Data Analysis 201617 Presession\\Exam preview")
+setwd("C:\\Users\\Documents")
 getwd()
 
 # LOAD  DATA
-hotels <- read.csv("DA0_exam_2016_hotels.csv")
+hotels <- read.csv("hotels.csv")
 price <- hotels$price_eur
 
 # CLEAN VARIABLES
@@ -289,10 +289,9 @@ finaldataset <- cbind(finaldataset, res)
 finaldataset$education <- NULL
 
 # GIT PUSH
+# git remote add origin https://github.com/szavuly/R-Boilerplate.git
+# git config remote.origin.url git@github.com:szavuly/R-Boilerplate.git
+# git pull -u origin master
+# git push -u origin master 
 
-git remote add origin https://github.com/ewenharrison/test.git
-git config remote.origin.url git@github.com:ewenharrison/test.git
-git pull -u origin master
-git push -u origin master
-
-# HALT AND CATCH FIRE
+# HALT AND CATCH FIRE 
