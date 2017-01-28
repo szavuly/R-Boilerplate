@@ -217,6 +217,16 @@ share$sports_irregular[share$sports == "2. Once a week"] <- 0
 share$sports_irregular[share$sports == "3. One to three times a month"] <- 1
 share$sports_irregular[share$sports == "4. Hardly ever, or never"] <- 1
 
+# SPLIT COLUMNS INTO BINARY VARIABLES
+lst <- strsplit(as.character(finaldataset$education),"-")
+lvl <- unique(unlist(lst))
+res <- data.frame(do.call(rbind,lapply(lst, function(x) table(factor(x, levels=lvl)))), stringsAsFactors=FALSE)
+finaldataset <- cbind(finaldataset, res)
+finaldataset$education <- NULL
+
+# MACHINE LEARNING PACKAGES
+library(rpart)
+
 # DECISION TREE
 library(rpart)
 set.seed(123)
@@ -280,13 +290,6 @@ yhat <- predict(md, d_test, n.trees = 100)
 table(ifelse(yhat > 0, 1, 0), d_test$spam)
 yhat <- predict(md, d_test, n.trees = gbm.perf(md, plot.it = FALSE))
 table(ifelse(yhat > 0, 1, 0), d_test$spam)
-
-# SPLIT COLUMNS INTO BINARY VARIABLES
-lst <- strsplit(as.character(finaldataset$education),"-")
-lvl <- unique(unlist(lst))
-res <- data.frame(do.call(rbind,lapply(lst, function(x) table(factor(x, levels=lvl)))), stringsAsFactors=FALSE)
-finaldataset <- cbind(finaldataset, res)
-finaldataset$education <- NULL
 
 # GIT PUSH
 # git remote add origin https://github.com/szavuly/R-Boilerplate.git
