@@ -243,3 +243,24 @@ ggplot(dta, aes(x = departure, y = arrival)) + geom_point()
 dta <- dt[, list(airtime = mean(AirTime, na.rm = TRUE)), by = Dest]
 ggplot(dta, aes(x = Dest, y = airtime)) + geom_bar(stat = 'identity')
 
+# Heatmap rendering
+library(nycflights13)
+str(flights)
+dt <- data.table(flights)
+str(dt)
+dt[, dayOfWeek := weekdays(as.Date(paste(year, month, day, sep ="-")))]
+dt[, .N, by = list(dayOfWeek)]
+dt[, .N, by = list(hour)]
+dta <- dt[, .N, by = list(dayOfWeek, hour)]
+ggplot(dta, aes(x = hour, y = dayOfWeek, fill = N)) + geom_tile()
+
+# Long and wide tables
+library(reshape2)
+?dcast
+?melt
+dcast(dta, dayOfWeek ~ hour) # from long to wide
+dta[dayOfWeek == "kedd" & hour == 5]
+dtw <- dcast(dta, hour ~ dayofweek)
+melt(dtw, id.vars = 'hours')
+
+# HALT AND CATCH FIRE
