@@ -90,7 +90,7 @@ lm(weightLb ~ heightIn, data = df)
 df$height <- df$heightIn * 2.54
 str(df)
 df$weight <- df$weightLb * 0.45
-df$bmi <- df$weightLb / (df$height/100)^2
+df$bmi <- df$weight / (df$height/100)^2
 
 # Checking min and max for variables
 min(df$bmi)

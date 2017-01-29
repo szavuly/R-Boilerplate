@@ -18,6 +18,8 @@ library(sjmisc)
 library(mfx)
 library(descr)
 library(rstan)
+library(pander) # nice table summaries
+library(beanplot)
 
 # CLEAR MEMORY
 rm(list = ls())
@@ -52,6 +54,7 @@ data$Leads <- as.numeric(as.character(data$Leads))
 # SHOW DATA
 hotels
 price
+pairs(df) # shows all scatterplots
 
 # DESCRIPTIVES
 summary(hotels)
