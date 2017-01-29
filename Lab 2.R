@@ -70,3 +70,80 @@ pairs(df) # shows all scatterplot within the dataset
 par(mfrow = c(1, 2))
 boxplot(df$bmi)
 beanplot(df$bmi)
+par(mfrow = c(1, 1)) # puts one plot per picture back
+
+### Advanced plotting with ggplot ###
+
+# Loading library and dataset
+library(ggplot2)
+?diamonds # this will be our test dataset
+
+# Ggplot bar plot
+ggplot(diamonds, aes(x = cut)) + geom_bar() # aes means aesthetics
+p <- ggplot(diamonds, aes(x = cut)) + geom_bar()
+str(p)
+p <- p + geom_bar()
+p
+p + theme_bw()
+ggplot(diamonds, aes(x = cut)) + 
+  geom_bar(colour = "seagreen3", fill = "white") # using different formattings
+ggplot(diamonds, aes(x = cut)) + geom_bar() + scale_y_log10() # using log y axis
+ggplot(diamonds, aes(x = cut)) + geom_bar() + scale_y_reverse()
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point()
+ggplot(diamonds, aes(x = carat, y = price, 
+  color = cut)) +
+  geom_point()
+ggplot(diamonds, aes(x = carat, y = price, 
+  color = color, shape = cut)) +
+  geom_point()
+ggplot(diamonds, aes(x = carat, y = price, 
+  color = color, shape = cut)) +
+  geom_point() + facet_wrap(~ clarity)
+
+# Histogram on price
+hist(diamonds$price)
+# or
+ggplot(diamonds, aes(x = price)) + geom_histogram(binwidth = 1000)
+
+# Kernel density and cut
+ggplot(diamonds, aes(x = price)) + geom_histogram(binwidth = 1000) + facet_wrap(~ cut)
+# or
+ggplot(diamonds, aes(x = price, fill = cut)) + geom_density(alpha = 0.3)
+
+# Heatmap on cut and color
+ggplot(diamonds, aes(x = cut, y = color, fill = price)) + geom_tile()
+
+# Scatterplot on x, y, z
+ggplot(diamonds, aes(x = x, y = y)) + geom_point() # slow
+ggplot(diamonds, aes(x = x, y = y)) + geom_hex() # fast
+
+# Fit model carat and price
+ggplot(diamonds, aes(carat, price)) + geom_point() + geom_smooth()
+?geom_smooth
+ggplot(diamonds, aes(carat, price)) + geom_point() + geom_smooth(method = 'lm', se = F)
+ggplot(diamonds, aes(carat, price, color = cut)) + geom_point() + geom_smooth(method = 'lm', se = F)
+ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + geom_smooth(method = 'lm', se = F)
+ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + geom_smooth(method = 'lm', se = F) + geom_smooth()
+ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + geom_smooth(method = 'lm', se = F) + geom_smooth() + facet_wrap(~ color)
+
+# Themes
+p <- ggplot(diamonds, aes(x, y, color = cut)) + geom_point()
+p
+library(ggthemes)
+p + theme_economist() + scale_color_economist()
+
+# Smart pair plotting
+library(GGally)
+pairs(df)
+ggpairs(df)
+library(pairsD3)
+pairsD3(df)
+
+# Loading page from an online source
+library(XML)
+ftse <- readHTMLTable(readLines('https://en.wikipedia.org/wiki/FTSE_100_Index'),
+              which = 2, header = TRUE, stringsAsFactors = FALSE)
+str(ftse)
+names(ftse)[4]
+names(ftse)[4] <- 'cap'

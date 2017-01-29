@@ -109,3 +109,5 @@ males <- subset (df, sex == "m")
 plot(males$height, males$weight, col = "deepskyblue3")
 abline(lm(weight ~ height, data = males), col = 'orange')
 aggregate(height ~ sex, FUN = mean, data = df)
+
+# HALT AND CATCH FIRE

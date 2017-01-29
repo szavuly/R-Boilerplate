@@ -20,6 +20,10 @@ library(descr)
 library(rstan)
 library(pander) # nice table summaries
 library(beanplot)
+library(ggthemes)
+library(GGally) # smart pair function
+library(pairsD3) # smart pai function with interactive Javascript
+library(XML)
 
 # CLEAR MEMORY
 rm(list = ls())
@@ -70,12 +74,10 @@ newdata <- subset(mydata, sex == "m" & age > 25,
                   select = weight:income)
 
 # PLOT COLORS
-
 # deepskyblue3
 # seagreen3
 # darkorange1
 # orangered1
-
 # lightblue4
 # aquamarine4
 # lightsalmon3
@@ -99,9 +101,13 @@ qplot(hotels$distance, geom = "histogram", binwidth = 1)
 
 # KERNEL DENSITY PLOT
 ggplot(hotels, aes(x = price_eur)) + geom_density(stat = "bin", binwidth = 10) + labs(x = "X Axis, binwidth: 1", y = "Density")
+ggplot(diamonds, aes(x = price, fill = cut)) + geom_density(alpha = 0.3) # overlapping kernel densities
 
 # SCATTERPLOT
 ggplot(data = hotels, aes(x = distance, y = price_huf)) + geom_point(size = 1.5, colour = "orange")
+
+# HEATMAP
+ggplot(diamonds, aes(x = cut, y = color, fill = price)) + geom_tile()
 
 # INTEGRATED GRAPHICS
 plot(movies$genre)
