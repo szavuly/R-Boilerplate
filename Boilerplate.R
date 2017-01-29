@@ -319,5 +319,9 @@ table(ifelse(yhat > 0, 1, 0), d_test$spam)
 # git pull -u origin master
 # git push -u origin master 
 # git push -f origin master
+# git push origin --force
+# git merge --abort
+# git merge --allow-unrelated-histories
+
 
 # HALT AND CATCH FIRE 
