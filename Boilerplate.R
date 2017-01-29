@@ -24,6 +24,8 @@ library(ggthemes)
 library(GGally) # smart pair function
 library(pairsD3) # smart pai function with interactive Javascript
 library(XML)
+library(data.table)
+library(hexbin)
 
 # CLEAR MEMORY
 rm(list = ls())
@@ -51,6 +53,12 @@ mutate(
   )
 
 # DATA TRANSFORMATIONS
+str(ftse)
+ftse$cap <- as.numeric(ftse$cap)
+str(ftse)
+ftse$Employees<- sub(",", "", ftse$Employees) # substitute comma with nothing
+ftse$Employees <- as.numeric(ftse$Employees)
+str(ftse)
 names(dataset)[names(dataset) == "X2015..YR2015."] <- "2015"
 dataset[dataset == ".."] = NA
 data$Leads <- as.numeric(as.character(data$Leads))
