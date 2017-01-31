@@ -1,3 +1,5 @@
+## SIMPLE COMMANDS ##
+
 # Load dataset
 df <- read.csv('http://bit.ly/BudapestBI-R-csv')
 str(df)
@@ -142,6 +144,10 @@ ggpairs(df)
 library(pairsD3)
 pairsD3(df)
 
+
+
+## DATA TRANSFORMATIONS ##
+
 # Loading page from an online source
 library(XML)
 ftse <- readHTMLTable(readLines('https://en.wikipedia.org/wiki/FTSE_100_Index'),
@@ -178,6 +184,7 @@ ggplot(banks, aes(x = Employees, y = cap)) + geom_text(aes(label = Company))
 
                             
 ## DATA TABLES ##
+
 library(hflights) # Flights dataframe
 library(data.table) # Better performance than data frames
 str(hflights)
