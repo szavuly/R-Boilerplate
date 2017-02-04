@@ -140,8 +140,8 @@ hc <- hclust(dm) # dendogram
 plot(hc)
 rect.hclust(hc, k = 3, border = 'red') # make 3 clusters
 cutree(hc, k = 3)
-rect.hclust(hc, k = 10, border = 'green') # make 10 clusters
-cutree(hc, k = 10) # returns cluster membership
+# rect.hclust(hc, k = 10, border = 'green') # make 10 clusters
+# cutree(hc, k = 10) # returns cluster membership
 
 # Cluster membership
 cn <- cutree(hc, k = 3)
@@ -190,8 +190,11 @@ library(party)
 library(partykit)
 plot(as.party(ct))
 
+
+
 # GENDER CLASSIFIER
 
+# Load database
 df <- read.csv('http://bit.ly/BudapestBI-R-csv')
 str(df)
 
