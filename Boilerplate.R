@@ -26,6 +26,13 @@ library(pairsD3) # smart pai function with interactive Javascript
 library(XML)
 library(data.table)
 library(hexbin)
+# Superheat package for advanced heatmaps
+install.packages("devtools")
+devtools::install_github("rlbarter/superheat")
+library(superheat)
+library(scatterplot3d)
+library(rgl)
+library(psych)
 
 # CLEAR MEMORY
 rm(list = ls())
