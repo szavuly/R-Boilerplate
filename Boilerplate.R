@@ -33,6 +33,8 @@ library(superheat)
 library(scatterplot3d)
 library(rgl)
 library(psych)
+library(party) # decision tree partitioning
+library(partykit) # decision tree partitioning
 
 # CLEAR MEMORY
 rm(list = ls())

@@ -186,6 +186,7 @@ predict(ct, newdata = test, type = 'class')
 table(
   test$Species,
   predict(ct, newdata = test, type = 'class'))
+library(party)
+library(partykit)
+plot(as.party(ct))
 
-
-)
