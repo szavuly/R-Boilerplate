@@ -76,7 +76,7 @@ par(mfrow = c(1, 1)) # puts one plot per picture back
 
 
 
-### ADVANCED PLOTTING WITH GGPLOT ###
+## ADVANCED PLOTTING WITH GGPLOT
 
 # Loading library and dataset
 library(ggplot2)
@@ -127,9 +127,12 @@ ggplot(diamonds, aes(carat, price)) + geom_point() + geom_smooth()
 ?geom_smooth
 ggplot(diamonds, aes(carat, price)) + geom_point() + geom_smooth(method = 'lm', se = F)
 ggplot(diamonds, aes(carat, price, color = cut)) + geom_point() + geom_smooth(method = 'lm', se = F)
-ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + geom_smooth(method = 'lm', se = F)
-ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + geom_smooth(method = 'lm', se = F) + geom_smooth()
-ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + geom_smooth(method = 'lm', se = F) + geom_smooth() + facet_wrap(~ color)
+ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + 
+  geom_smooth(method = 'lm', se = F)
+ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + 
+  geom_smooth(method = 'lm', se = F) + geom_smooth()
+ggplot(diamonds, aes(carat, price)) + geom_point(aes(color = cut)) + 
+  geom_smooth(method = 'lm', se = F) + geom_smooth() + facet_wrap(~ color)
 
 # Themes
 p <- ggplot(diamonds, aes(x, y, color = cut)) + geom_point()
@@ -146,7 +149,7 @@ pairsD3(df)
 
 
 
-## DATA TRANSFORMATIONS ##
+# DATA TRANSFORMATIONS
 
 # Loading page from an online source
 library(XML)
@@ -183,7 +186,7 @@ ggplot(banks, aes(x = Employees, y = cap)) + geom_text(aes(label = Company))
                           
 
                             
-## DATA TABLES ##
+## DATA TABLES
 
 library(hflights) # Flights dataframe
 library(data.table) # Better performance than data frames

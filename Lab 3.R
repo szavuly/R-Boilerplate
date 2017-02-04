@@ -79,3 +79,113 @@ cor(residuals(lm(math ~ x, df)),
 
 library(psych)
 partial.r(df, 2:3, 4)
+
+# Iris
+
+str(iris)
+
+# Sepal width based on the length
+
+fit <- lm(Sepal.Width ~ Sepal.Length, data = iris)
+summary(fit)
+pairs(iris, col = 'deepskyblue3')
+
+hist(iris$Sepal.Length)
+hist(iris$Sepal.Width)
+
+plot(iris$Sepal.Length, iris$Sepal.Width)
+points(iris$Sepal.Width, predict(fit), col = "deepskyblue3")
+abline(fit, col = 'darkorange2')
+
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + 
+  geom_point() + geom_smooth(method = 'lm', 
+  formula = y ~ poly(x, 2))
+
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + 
+  geom_point() + geom_smooth(method = 'lm', formula = y ~ poly(x, 3))
+
+# Controlling for another variable (Species)
+plot(iris$Sepal.Length, iris$Sepal.Width, col = iris$Species)
+lm(Sepal.Width ~ Sepal.Length + Species, iris)
+summary(lm(Sepal.Width ~ Sepal.Length + Species, iris))
+
+# In three tables
+ggplot(iris, aes(Sepal.Width, Sepal.Length)) + geom_smooth(method = 'lm', se = F) + facet_wrap(~ Species)
+
+# In three separate linear models
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, col = Species)) + 
+  geom_point() + geom_smooth(method = 'lm')
+
+# In three separate linear models but one trendline
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + 
+  geom_point(aes(col = Species)) + geom_smooth(method = 'lm')
+
+# In three separate linear models with a trendline not controlling for species
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + 
+  geom_point(aes(col = Species)) + 
+  geom_smooth(aes(col = Species), method = 'lm') + 
+    geom_smooth(method = 'lm', col = 'black')
+
+
+
+# CLUSTERING
+
+# First build a distance matrix
+dm <- dist(iris[,1:4]) # refer only to the first 4 variables
+str(dm)
+summary(dm)
+
+# Plotting dendogram and determining cluster memberships
+hc <- hclust(dm) # dendogram
+plot(hc)
+rect.hclust(hc, k = 3, border = 'red') # make 3 clusters
+cutree(hc, k = 3)
+rect.hclust(hc, k = 10, border = 'green') # make 10 clusters
+cutree(hc, k = 10) # returns cluster membership
+
+# Cluster membership
+cn <- cutree(hc, k = 3)
+table(iris$Species, cn) # matrix for species and clusters
+
+# Clustering with NbClust finding the optimum number of clusters
+library(NbClust)
+NbClust(iris[, 1:4], method = 'complete')
+
+# K-Means clustering
+kmeans(iris[,1:4], 3)
+kc <- kmeans(iris[,1:4], 3)
+kc$cluster
+table(cn, kc$cluster)
+
+# Supervised learning for species
+
+# Train and test datasets
+iris
+iris$rnd <- runif(150) # random numbers added
+irisrnd <- iris[order(iris$rnd),]
+irisrnd$rnd <- NULL
+str(irisrnd)
+train <- irisrnd[1:100,]
+test <- irisrnd[101:150,]
+
+# KNN
+library(class)
+fit <- knn(train[,1:4], test[,1:4], train$Species) # we estimate by sepal and petal length, width
+fit # returns the predictive labels
+test[1, 1:4]
+table(test$Species, fit) # Compare original species with the estimates labels
+
+# Decision tree
+library(rpart)
+ct <- rpart(Species ~ ., data = train)
+plot(ct)
+text(ct)
+predict(ct)
+str(predict(ct))
+predict(ct, newdata = test, type = 'class')
+table(
+  test$Species,
+  predict(ct, newdata = test, type = 'class'))
+
+
+)

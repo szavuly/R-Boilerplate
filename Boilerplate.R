@@ -230,6 +230,16 @@ ggplot(cps) +
   geom_smooth(aes(age_female, lnw), method = "lm", colour = "lightsalmon2") +
   annotate("text", x = 40, y = 3, label = "age_female", colour = "lightsalmon2")
 
+# THREE REGRESSIONS IN THE SAME PLOT BY CATEGORY
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, col = Species)) + 
+  geom_point() + geom_smooth(method = 'lm')
+
+# THREE REGRESSIONS IN THE SAME PLOT BY CATEGORY PLUS THE NON-CONTROLLING TRENDLINE
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + 
+  geom_point(aes(col = Species)) + 
+  geom_smooth(aes(col = Species), method = 'lm') + 
+  geom_smooth(method = 'lm', col = 'black')
+
 # MAKING NEW MEASURE FROM ONE COLUMN TO THE OTHER WITH DUMMY VARABLES
 share$sports_regular[share$sports == "1. More than once a week"] <- 1
 share$sports_regular[share$sports == "2. Once a week"] <- 1
