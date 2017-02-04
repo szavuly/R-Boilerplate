@@ -190,3 +190,199 @@ library(party)
 library(partykit)
 plot(as.party(ct))
 
+# GENDER CLASSIFIER
+
+df <- read.csv('http://bit.ly/BudapestBI-R-csv')
+str(df)
+
+# Split train dataset
+set.seed(7) # same random numbers everywhere
+rnd <- runif(nrow(df)) # generate random numbers
+df <- df[order(rnd),] # reorder df
+train <- df[1:100,]
+test <- df[101:237,]
+
+# Decision tree
+ct <- rpart(sex ~ heightIn + weightLb, data = train) # classify gender given height and weight
+plot(ct); text(ct)
+#or
+plot(as.party(ct))
+table(train$sex, predict(ct, type = 'class')) # confusion matrix
+predict(ct)
+
+
+
+# IMAGE ANALYSIS
+
+library(jpeg)
+library(readbitmap)
+download.file('http://bit.ly/BudapestBI-R-img', 'image.jpg')
+list.files()
+img <- read.bitmap('image.bmp')
+str(img)
+
+# Transform 3-dimensional RGB to 2-dimensional array
+h <- dim(img)[1]
+w <- dim(img)[2]
+img2d <- matrix(img, h * w)
+str(img2d)
+
+# Principal component analysis
+pca <- prcomp(img2d)
+str(pca)
+summary(pca)
+
+# Show image
+str(matrix(pca$x[, 2], h))
+image(matrix(pca$x[, 2], h))
+
+
+
+# DISTANCE MATRIX
+
+# Create distances
+d <- dist(mtcars)
+mtcars
+mds <- cmdscale(d)
+mds
+
+# Plot map based on distances
+plot(mds)
+text(mds[, 1], mds[, 2], rownames(mtcars))
+
+
+
+# DISTANCE MATRIX WITH H2O (code by github.com/daroczig)
+
+# Launch H2o
+library(h2o)
+h2o.init() # graphical interface in browser: http://localhost:54321/flow/index.html
+
+# Load data into H2o
+library(hflights)
+as.h2o(hflights, 'hflights') # load data into H2O
+hflights.hex <- as.h2o(hflights, 'hflights')
+str(hflights.hex)
+hflights.hex # returns only the cached observations
+summary(hflights.hex)
+
+# Write demo data to disk
+library(hflights)
+write.csv(hflights, 'hflights.csv', row.names = FALSE)
+hflights.hex <- h2o.uploadFile('hflights.csv', destination_frame = 'hflights')
+str(hflights.hex)
+hflights.hex # returns only the cached observations
+head(hflights.hex)
+head(hflights.hex, 3)
+summary(hflights.hex)
+# Go to H2O web interface at http://127.0.0.1:54321
+
+# Convert numeric to factor/enum
+hflights.hex[, 'FlightNum'] <- as.factor(hflights.hex[, 'FlightNum'])
+summary(hflights.hex)
+
+# Convert in R
+hflights.hex$FlightNum <- as.factor(hflights.hex$FlightNum)
+for (v in c('Month', 'DayofMonth', 'DayOfWeek', 'DepTime', 'ArrTime')) {
+  hflights.hex[, v] <- as.factor(hflights.hex[, v])
+}
+summary(hflights.hex)
+
+# Feature engineering: departure time? is it OK? hour of the day?
+## Redo everything... just use the R script
+library(data.table)
+dt <- data.table(hflights)
+dt[, hour := substr(DepTime, 1, 2)]
+dt[, .N, by = hour]
+
+dt[, hour := substr(DepTime, 1, nchar(DepTime) - 2)]
+dt[, hour := cut(as.numeric(hour), seq(0, 24, 4))]
+dt[, .N, by = hour]
+dt[is.na(hour)]
+
+# Drop columns
+str(dt)
+dt <- dt[, .(Month, DayofMonth, DayOfWeek, hour, Dest, Origin,
+             UniqueCarrier, FlightNum, TailNum, Distance, Cancelled)]
+
+# Transform to factor
+for (v in c('Month', 'DayofMonth', 'DayOfWeek', 'hour', 'FlightNum', 'UniqueCarrier')) {
+  set(dt, j = v, value = as.factor(dt[, get(v)]))
+}
+str(dt)
+
+# Re-upload to H2O
+h2o.ls()
+h2o.rm('hflights')
+as.h2o(dt, 'hflights')
+
+# Split the data
+hflights.hex <- h2o.getFrame('hflights')
+h2o.splitFrame(data = hflights.hex , ratios = 0.75, destination_frames = c('train', 'test'))
+h2o.ls()
+
+# Build the first model
+hflights.rf <- h2o.randomForest(
+  x = names(hflights.hex),
+  y = 'Cancelled',
+  training_frame = 'train',
+  validation_frame = 'test')
+hflights.rf
+
+# Root mean square error, R^2
+dt[Cancelled == 1, .N, by = hour]
+
+# Taking into account the hour doesn't make much sense + "cancelled" was an integer instead of factor
+hflights.hex$hour <- NULL
+hflights.hex$Cancelled <- as.factor(hflights.hex$Cancelled)
+
+# Split again
+h2o.splitFrame(data = hflights.hex , ratios = 0.75, destination_frames = c('train', 'test'))
+
+# Rerun model
+hflights.rf <- h2o.randomForest(
+  x = names(hflights.hex),
+  y = 'Cancelled',
+  training_frame = 'train',
+  validation_frame = 'test')
+hflights.rf
+
+# Trying to minimize logloss, in the test based on the train dataset
+
+# More trees
+hflights.rf <- h2o.randomForest(
+  x = names(hflights.hex),
+  y = 'Cancelled',
+  training_frame = 'train',
+  validation_frame = 'test',
+  ntrees = 500)
+
+# GBM
+hflights.gbm <- h2o.gbm(
+  x = names(hflights.hex),
+  y = 'Cancelled',
+  training_frame = 'train',
+  validation_frame = 'test',
+  model_id = 'hflights_gbm')
+
+# More trees should help again, right?
+hflights.gbm <- h2o.gbm(
+  x = names(hflights.hex),
+  y = 'Cancelled',
+  training_frame = 'train',
+  validation_frame = 'test',
+  model_id = 'hflights_gbm2', ntrees = 500)
+# But no: although higher training AUC, lower validation AUC => overfit
+
+# Cut back those trees
+hflights.gbm <- h2o.gbm(
+  x = names(hflights.hex),
+  y = 'Cancelled',
+  training_frame = 'train',
+  validation_frame = 'test',
+  model_id = 'hflights_gbm2', ntrees = 250, learn_rate = 0.01)
+# http://docs.h2o.ai/h2o/latest-stable/h2o-docs/data-science/gbm-faq/tuning_a_gbm.html
+
+# Shutdown H2O
+
+# Halt and catch fire
