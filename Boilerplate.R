@@ -35,6 +35,7 @@ library(rgl)
 library(psych)
 library(party) # decision tree partitioning
 library(partykit) # decision tree partitioning
+library(shiny)
 
 # CLEAR MEMORY
 rm(list = ls())
