@@ -45,8 +45,8 @@ setwd("C:\\Users\\Documents")
 getwd()
 
 # LOAD  DATA
-hotels <- read.csv("hotels.csv")
-price <- hotels$price_eur
+datafile <- read.csv("datafile.csv")
+price <- datafile$price_usd # example
 
 # CLEAN VARIABLES
 gdppc$gdppc <- as.numeric(as.character(gdppc$gdppc))
